@@ -20,8 +20,6 @@ use curve25519_dalek::scalar::Scalar;
 
 use ed25519::signature::Verifier;
 
-use crate::mul_base::mul_base;
-
 pub use sha2::Sha512;
 
 #[cfg(feature = "pkcs8")]
@@ -149,7 +147,7 @@ impl VerifyingKey {
         bits[31] &= 127;
         bits[31] |= 64;
 
-        let point = mul_base(&Scalar::from_bits(*bits));
+        let point = EdwardsPoint::mul_base(&Scalar::from_bits(*bits));
         let compressed = point.compress();
 
         VerifyingKey(compressed, point)

@@ -26,7 +26,7 @@ use sha2::Sha512;
 
 use curve25519_dalek::digest::generic_array::typenum::U64;
 use curve25519_dalek::digest::Digest;
-use curve25519_dalek::edwards::CompressedEdwardsY;
+use curve25519_dalek::edwards::{CompressedEdwardsY, EdwardsPoint};
 use curve25519_dalek::scalar::Scalar;
 
 use ed25519::signature::{KeypairRef, Signer, Verifier};
@@ -35,7 +35,6 @@ use zeroize::{Zeroize, ZeroizeOnDrop};
 
 use crate::constants::*;
 use crate::errors::*;
-use crate::mul_base::mul_base;
 use crate::signature::*;
 use crate::verifying::*;
 
@@ -706,7 +705,7 @@ impl ExpandedSecretKey {
         h.update(message);
 
         let r = Scalar::from_hash(h);
-        let R: CompressedEdwardsY = mul_base(&r).compress();
+        let R: CompressedEdwardsY = EdwardsPoint::mul_base(&r).compress();
 
         h = Sha512::new();
         h.update(R.as_bytes());
@@ -784,7 +783,7 @@ impl ExpandedSecretKey {
             .chain_update(&prehash[..]);
 
         let r = Scalar::from_hash(h);
-        let R: CompressedEdwardsY = mul_base(&r).compress();
+        let R: CompressedEdwardsY = EdwardsPoint::mul_base(&r).compress();
 
         h = Sha512::new()
             .chain_update(b"SigEd25519 no Ed25519 collisions")

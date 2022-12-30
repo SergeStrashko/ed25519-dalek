@@ -260,7 +260,6 @@ pub use ed25519;
 mod batch;
 mod constants;
 mod errors;
-mod mul_base;
 mod signature;
 mod signing;
 mod verifying;
